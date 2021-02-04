@@ -28,6 +28,14 @@ def test_category_export_too_many_jobs_exception(set_scrapinghub_requests_mock):
     assert str(e_info.value) == 'Spider wb has more than SCHEDULED_JOBS_THRESHOLD queued jobs'
 
 
+def test_category_export_too_many_jobs_no_exception_for_priviledged(set_scrapinghub_requests_mock):
+    set_scrapinghub_requests_mock(pending_count=2, running_count=10)
+
+    category_export('https://www.wildberries.ru/category/dummy', 123, priority=5)
+
+    assert True
+
+
 def test_get_cat_update_users(bot_user):
     bot_user.subscribe_to_wb_categories_updates = True
     bot_user.save()

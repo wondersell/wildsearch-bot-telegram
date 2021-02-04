@@ -78,7 +78,10 @@ def category_export(url: str, chat_id: int, spider='wb', priority=2) -> str:
     logger.info(f'Export {url} for chat #{chat_id}')
     client, project = init_scrapinghub()
 
-    if scheduled_jobs_count(project, spider) > env('SCHEDULED_JOBS_THRESHOLD', cast=int, default=1):
+    scheduled_jobs = scheduled_jobs_count(project, spider)
+    max_scheduled_jobs = env('SCHEDULED_JOBS_THRESHOLD', cast=int, default=1)
+
+    if priority < 3 and scheduled_jobs > max_scheduled_jobs:
         raise Exception('Spider wb has more than SCHEDULED_JOBS_THRESHOLD queued jobs')
 
     job = project.jobs.run(spider, priority=priority, job_args={
