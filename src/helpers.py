@@ -73,7 +73,7 @@ def scheduled_jobs_count(project: str, spider: str) -> int:
     return spider.jobs.count(state='pending') + spider.jobs.count(state='running')
 
 
-def category_export(url: str, chat_id: int, spider='wb') -> str:
+def category_export(url: str, chat_id: int, spider='wb', priority=2) -> str:
     """Schedule WB category export on Scrapinghub."""
     logger.info(f'Export {url} for chat #{chat_id}')
     client, project = init_scrapinghub()
@@ -81,7 +81,7 @@ def category_export(url: str, chat_id: int, spider='wb') -> str:
     if scheduled_jobs_count(project, spider) > env('SCHEDULED_JOBS_THRESHOLD', cast=int, default=1):
         raise Exception('Spider wb has more than SCHEDULED_JOBS_THRESHOLD queued jobs')
 
-    job = project.jobs.run(spider, job_args={
+    job = project.jobs.run(spider, priority=priority, job_args={
         'category_url': url,
         'callback_url': env('WILDSEARCH_JOB_FINISHED_CALLBACK') + f'/{spider}_category_export',
         'callback_params': f'chat_id={chat_id}',

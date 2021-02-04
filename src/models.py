@@ -53,6 +53,16 @@ class User(pw.Model):
 
         return oldest_request.created_at + timedelta(hours=24)
 
+    def get_priority(self) -> int:
+        """
+        Priority for scrapinghub parser from 0 (lowest) to 4 (highest)
+        :return:
+        """
+        if self.daily_catalog_requests_limit > 3:
+            return 4
+
+        return 2
+
     def save(self, *args, **kwargs):
         """Add timestamps for creating and updating items."""
         if not self.created_at:

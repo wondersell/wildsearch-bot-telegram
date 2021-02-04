@@ -167,7 +167,7 @@ def wb_catalog(update: Update, context: CallbackContext):
         process_event(user=user, event='Received "Out of requests" error')
 
     else:
-        tasks.schedule_category_export.delay(update.message.text, update.message.chat_id, log_item.id)
+        tasks.schedule_category_export.delay(update.message.text, update.message.chat_id, user.get_priority(), log_item.id)
         process_event(user=user, event='Started WB catalog export')
 
 

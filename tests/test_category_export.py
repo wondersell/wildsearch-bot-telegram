@@ -53,7 +53,7 @@ def test_schedule_category_export_correct(mocked_send_message, mocked_check_requ
 
     log_item = log_command(bot_user, 'wb_catalog', 'la-la-la')
 
-    schedule_category_export('https://www.wildberries/category/url', bot_user.chat_id, log_item.id)
+    schedule_category_export('https://www.wildberries/category/url', bot_user.chat_id, 2, log_item.id)
 
     assert 'Мы обрабатываем ваш запрос' in mocked_send_message.call_args.kwargs['text']
     mocked_check_requests_count_recovered.assert_called()
@@ -65,7 +65,7 @@ def test_schedule_category_export_with_exception(mocked_send_message, mocked_cat
     mocked_category_export.side_effect = Exception('Spider wb has more than SCHEDULED_JOBS_THRESHOLD queued jobs')
     log_item = log_command(bot_user, 'wb_catalog', 'la-la-la')
 
-    schedule_category_export('https://www.wildberries/category/url', bot_user.chat_id, log_item.id)
+    schedule_category_export('https://www.wildberries/category/url', bot_user.chat_id, 2, log_item.id)
 
     mocked_category_export.assert_called()
     assert 'мы сейчас не можем обработать ваш запрос' in mocked_send_message.call_args.kwargs['text']

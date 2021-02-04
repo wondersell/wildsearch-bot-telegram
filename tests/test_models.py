@@ -204,3 +204,14 @@ def test_get_subscribed_to_wb_categories_updates_not_subscribed(bot_user):
     subscribed_users = get_subscribed_to_wb_categories_updates()
 
     assert subscribed_users.count() == 0
+
+
+@pytest.mark.parametrize('limit_count, expected_priority', [
+    [3, 2],
+    [100, 4],
+])
+def test_user_get_priority(limit_count, expected_priority, bot_user):
+    bot_user.daily_catalog_requests_limit = limit_count
+    bot_user.save()
+
+    assert bot_user.get_priority() == expected_priority
