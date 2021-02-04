@@ -80,7 +80,7 @@ def calculate_category_stats(self, job_id, chat_id):
             caption='Файл с отчетом',
             filename=f'{stats.category_name()} на {marketplace}.{file_extension}',
         )
-    except Exception as exception_info:
+    except Exception as exception_info:  # noqa: B902
         logger.error(f'Error while sending file: {str(exception_info)}')
         pass
 
@@ -97,7 +97,7 @@ def schedule_category_export(category_url: str, chat_id: int, priority: int, log
         message = '⏳ Мы обрабатываем ваш запрос. Когда все будет готово, вы получите результат.\n\nБольшие категории (свыше 1 тыс. товаров) могут обрабатываться до одного часа.\n\nМаленькие категории обрабатываются в течение нескольких минут.'
         check_requests_count_recovered.apply_async((), {'chat_id': chat_id}, countdown=24 * 60 * 60 + 60)
         log_item.set_status('success')
-    except Exception:
+    except Exception:  # noqa: B902
         message = 'Извините, мы сейчас не можем обработать ваш запрос – у нас образовалась слишком большая очередь на анализ категорий. Пожалуйста, подождите немного и отправьте запрос снова.'
         track_amplitude.delay(chat_id=chat_id, event='Received "Too long queue" error')
         log_item.set_status('too_long_queue')
