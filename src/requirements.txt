@@ -7,7 +7,7 @@ scrapinghub==2.3.1
 sentry-sdk==0.19.5
 
 openpyxl==3.0.5
-PyYAML==5.3.1
+PyYAML==5.4.1
 pandas==1.2.1
 envparse==0.2.0
 msgpack==1.0.2
