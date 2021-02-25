@@ -102,6 +102,32 @@ def test_category_export_task_sends_message(mocked_send_message, mocked_send_doc
     mocked_send_category_requests_count_message.assert_called()
 
 
+@patch('src.tasks.send_category_requests_count_message.delay')
+@patch('telegram.Bot.send_document')
+@patch('telegram.Bot.send_message')
+def test_category_export_task_sends_message_for_premium_user(mocked_send_message, mocked_send_document, mocked_send_category_requests_count_message, set_scrapinghub_requests_mock, bot_user):
+    set_scrapinghub_requests_mock(job_id='414324/1/926')
+
+    bot_user.daily_catalog_requests_limit = 100
+    bot_user.save()
+
+    calculate_category_stats('414324/1/926', bot_user.chat_id)
+
+    required_stats = [
+        'Количество товаров',
+        'Продаж всего',
+        'В среднем продаются по',
+        'Медиана продаж',
+    ]
+
+    for message in required_stats:
+        assert message in mocked_send_message.call_args.kwargs['text']
+
+    mocked_send_message.assert_called()
+    mocked_send_document.assert_called()
+    mocked_send_category_requests_count_message.assert_not_called()
+
+
 @patch('telegram.Bot.send_message')
 def test_category_export_task_not_finished(mocked_send_message, set_scrapinghub_requests_mock, bot_user, requests_mock):
     requests_mock.get('https://storage.scrapinghub.com/jobs/414324/1/926/state', text='"running"')

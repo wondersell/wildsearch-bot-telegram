@@ -212,7 +212,7 @@ def generate_category_stats_export_file(stats):
     writer = pd.ExcelWriter(temp_file.name)
 
     dataframe = stats.df
-    dataframe = dataframe.drop(['turnover', 'sku', 'days_since_first_review', 'turnover_month', 'purchases_month', 'bin'])
+    dataframe = dataframe.drop(['turnover', 'sku', 'days_since_first_review', 'turnover_month', 'purchases_month', 'bin'], axis=1)
     dataframe.to_excel(writer, sheet_name='Товары', index=None, header=True)
 
     distributions = calc_sales_distribution(stats)
