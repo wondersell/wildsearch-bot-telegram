@@ -1,6 +1,5 @@
-from datetime import datetime, timedelta
-
 import peewee as pw
+from datetime import datetime, timedelta
 from envparse import env
 from playhouse.db_url import connect
 from telegram import Update

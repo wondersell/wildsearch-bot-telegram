@@ -1,5 +1,4 @@
 import logging
-
 import numpy as np
 
 from ..helpers import (get_digits_divider, get_digits_text, smart_format_number, smart_format_prettify,

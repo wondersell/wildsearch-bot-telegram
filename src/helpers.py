@@ -1,10 +1,10 @@
+from typing import Union
+
+import boto3
 import json
 import logging
 import math
 import re
-from typing import Union
-
-import boto3
 import requests
 from envparse import env
 from scrapinghub import ScrapinghubClient

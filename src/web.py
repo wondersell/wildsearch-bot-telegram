@@ -1,7 +1,6 @@
+import falcon
 import json
 import logging
-
-import falcon
 from envparse import env
 from telegram import Bot, Update
 

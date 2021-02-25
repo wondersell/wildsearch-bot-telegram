@@ -1,6 +1,5 @@
-import logging
-
 import click
+import logging
 from envparse import env
 from telegram import Bot
 

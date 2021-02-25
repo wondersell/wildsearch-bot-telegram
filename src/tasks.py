@@ -1,11 +1,10 @@
+import boto3
 import datetime
 import logging
 import os
+import pandas as pd
 import tempfile
 import time
-
-import boto3
-import pandas as pd
 from airtable import Airtable
 from celery import Celery
 from envparse import env
@@ -109,6 +108,7 @@ def send_export_file(stats, user, chat_id, marketplace):
     except Exception as exception_info:  # noqa: B902
         logger.error(f'Error while sending file: {str(exception_info)}')
         pass
+
 
 @celery.task()
 def schedule_category_export(category_url: str, chat_id: int, priority: int, log_id):
@@ -222,6 +222,7 @@ def generate_category_stats_export_file(stats):
 def generate_category_stats_report_file(stats, username='%username%'):
     from jinja2 import Environment, FileSystemLoader, select_autoescape
     from weasyprint import HTML
+
     from .viewmodels.report import Report
 
     start_time = time.time()

@@ -1,6 +1,5 @@
-from textwrap import shorten
-
 from dateutil.parser import parse as date_parse
+from textwrap import shorten
 
 from .base import BaseListViewModel, BaseViewModel
 from .indicator import Indicator
