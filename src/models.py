@@ -53,12 +53,15 @@ class User(pw.Model):
 
         return oldest_request.created_at + timedelta(hours=24)
 
+    def is_premium_user(self):
+        return self.daily_catalog_requests_limit > 3
+
     def get_priority(self) -> int:
         """
         Priority for scrapinghub parser from 0 (lowest) to 4 (highest)
         :return:
         """
-        if self.daily_catalog_requests_limit > 3:
+        if self.is_premium_user():
             return 4
 
         return 2

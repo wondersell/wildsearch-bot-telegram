@@ -68,8 +68,34 @@ def calculate_category_stats(self, job_id, chat_id):
     message = generate_category_stats_message(stats=stats)
     bot.send_message(chat_id=chat_id, text=message, parse_mode='Markdown', disable_web_page_preview=True)
 
-    # export_file = generate_category_stats_export_file(stats)
-    export_file = generate_category_stats_report_file(stats, username=user.user_name)
+    send_report_file(stats, user, chat_id, marketplace)
+
+    if user.is_premium_user():
+        send_export_file(stats, user, chat_id, marketplace)
+
+    send_category_requests_count_message.delay(chat_id)
+    track_amplitude.delay(chat_id=chat_id, event=f'Received {slug} category analyses')
+
+
+def send_report_file(stats, user, chat_id, marketplace):
+    report_file = generate_category_stats_report_file(stats, username=user.user_name)
+
+    filename, file_extension = os.path.splitext(report_file.name)
+
+    try:
+        bot.send_document(
+            chat_id=chat_id,
+            document=report_file,
+            caption='Файл с отчетом',
+            filename=f'{stats.category_name()} на {marketplace}.{file_extension}',
+        )
+    except Exception as exception_info:  # noqa: B902
+        logger.error(f'Error while sending file: {str(exception_info)}')
+        pass
+
+
+def send_export_file(stats, user, chat_id, marketplace):
+    export_file = generate_category_stats_export_file(stats)
 
     filename, file_extension = os.path.splitext(export_file.name)
 
@@ -83,10 +109,6 @@ def calculate_category_stats(self, job_id, chat_id):
     except Exception as exception_info:  # noqa: B902
         logger.error(f'Error while sending file: {str(exception_info)}')
         pass
-
-    send_category_requests_count_message.delay(chat_id)
-    track_amplitude.delay(chat_id=chat_id, event=f'Received {slug} category analyses')
-
 
 @celery.task()
 def schedule_category_export(category_url: str, chat_id: int, priority: int, log_id):
