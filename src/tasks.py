@@ -72,7 +72,9 @@ def calculate_category_stats(self, job_id, chat_id):
     if user.is_premium_user():
         send_export_file(stats, user, chat_id, marketplace)
 
-    send_category_requests_count_message.delay(chat_id)
+    if not user.is_premium_user():
+        send_category_requests_count_message.delay(chat_id)
+
     track_amplitude.delay(chat_id=chat_id, event=f'Received {slug} category analyses')
 
 
@@ -102,8 +104,8 @@ def send_export_file(stats, user, chat_id, marketplace):
         bot.send_document(
             chat_id=chat_id,
             document=export_file,
-            caption='Файл с отчетом',
-            filename=f'{stats.category_name()} на {marketplace}.{file_extension}',
+            caption='Полная выгрузка  в Excel',
+            filename=f'(Excel) {stats.category_name()} на {marketplace}.{file_extension}',
         )
     except Exception as exception_info:  # noqa: B902
         logger.error(f'Error while sending file: {str(exception_info)}')
@@ -208,7 +210,10 @@ def generate_category_stats_export_file(stats):
     temp_file = tempfile.NamedTemporaryFile(suffix='.xlsx', prefix='wb_category_', mode='r+b', delete=True)
 
     writer = pd.ExcelWriter(temp_file.name)
-    stats.df.to_excel(writer, sheet_name='Товары', index=None, header=True)
+
+    dataframe = stats.df
+    dataframe = dataframe.drop(['turnover', 'sku', 'days_since_first_review', 'turnover_month', 'purchases_month', 'bin'])
+    dataframe.to_excel(writer, sheet_name='Товары', index=None, header=True)
 
     distributions = calc_sales_distribution(stats)
     distributions.df.to_excel(writer, sheet_name='Распределение продаж', index=None, header=True)
