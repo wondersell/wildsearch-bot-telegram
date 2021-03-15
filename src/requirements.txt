@@ -6,7 +6,7 @@ click==7.1.2
 scrapinghub==2.3.1
 sentry-sdk==0.19.5
 
-openpyxl==3.0.5
+openpyxl==3.0.7
 PyYAML==5.3.1
 pandas==1.2.1
 envparse==0.2.0
