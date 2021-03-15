@@ -22,7 +22,7 @@ boto3==1.17.1
 Jinja2==2.11.3
 WeasyPrint==52.2
 airtable-python-wrapper==0.15.1
-peewee==3.14.0
+peewee==3.14.3
 psycopg2-binary==2.8.6
 
 pytest==6.2.2
